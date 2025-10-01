@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.oraclejava'
+version = '0.0.1-SNAPSHOT'
+description = 'library'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //OpenSearch 의존성 추가
+//    implementation 'org.opensearch.client:opensearch-rest-client:3.2.0'
+    //implementation "org.apache.httpcomponents.client5:httpclient5:5.2.1"
+    implementation 'org.opensearch.client:opensearch-java:3.2.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

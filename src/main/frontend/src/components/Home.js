@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NumericFormat } from 'react-number-format';
 import {
     MDBCard,
     MDBCardBody,
@@ -59,7 +60,7 @@ const Home = () => {
     };
 
     const onKeyDown = (e) => {
-        if (e.key == 'Enter') searchTitle();
+        if (e.key === 'Enter') searchTitle();
     };
 
 
@@ -95,7 +96,8 @@ const Home = () => {
                                 <MDBCardBody>
                                     <MDBCardTitle>{book.title}</MDBCardTitle>
                                     <MDBCardText>
-                                        {book.price}원
+                                        <NumericFormat value={book.price} allowLeadingZeros thousandSeparator="," displayType="text" />
+                                        원
                                     </MDBCardText>
                                     <MDBBtn href={`https://product.kyobobook.co.kr/detail/${book.sale_id}` } target="_blank" rel="noreferrer">구입하기</MDBBtn>
                                 </MDBCardBody>

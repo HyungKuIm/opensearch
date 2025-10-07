@@ -18,7 +18,7 @@ public class LibrarySearchService {
 
     public List<ITBook> search(String keyword) {
         List<ITBook> books = new ArrayList<>();
-        ITBook book = new ITBook();
+        //ITBook book = new ITBook();
         try {
             SearchRequest request = SearchRequest.of(searchRequest ->
                     searchRequest.index("library")

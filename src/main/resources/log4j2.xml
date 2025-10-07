@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%c %l %5p %m%n" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.oraclejava" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+        <Logger name="org.springframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+
+        
+
+    </Loggers>
+</Configuration>

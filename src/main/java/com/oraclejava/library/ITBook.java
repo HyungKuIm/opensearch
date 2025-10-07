@@ -9,4 +9,6 @@ public class ITBook {
     private int id;
     private String title;
     private int price;
+    private String isbn;
+    private String sale_id;
 }

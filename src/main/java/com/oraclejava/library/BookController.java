@@ -27,10 +27,13 @@ public class BookController {
     private final LibrarySearchService librarySearchService;
 
     @GetMapping("/list")
-    public List<ITBook> listOfBook(@RequestParam String title) {
+    public List<ITBook> listOfBook(@RequestParam String title,
+            @RequestParam(required = false, defaultValue = "1") int page) {
         log.info("title: " + title);
+        int pageSize = 9;
+        int from = (page - 1) * pageSize;
 
-        return librarySearchService.search(title);
+        return librarySearchService.search(title, from, pageSize);
     }
     
 }

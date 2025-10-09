@@ -13,12 +13,17 @@ import {
     MDBInput
 } from 'mdb-react-ui-kit';
 
+import Pagination from "./pagination/Pagination";
+
 const Home = () => {
 
     const [books, setBooks] = useState([]);
     const [title, setTitle] = useState('');
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
 
 
 
@@ -36,7 +41,7 @@ const Home = () => {
             //한글/공백 안전 인코딩
             const q = encodeURIComponent(trimmed);
 
-            const url = `http://localhost:8080/books/list?title=${q}`;
+            const url = `http://localhost:8080/books/list?title=${q}&page=${page}`;
 
             const response = await fetch(url);
 
@@ -62,6 +67,14 @@ const Home = () => {
     const onKeyDown = (e) => {
         if (e.key === 'Enter') searchTitle();
     };
+
+    const handleSearchUser = () => {
+        console.log(`현재 페이지:${page}`);
+    }
+
+    const setCurrentPageNumber = (page) => {
+        setPage(page);
+    }
 
 
     return (
@@ -110,6 +123,13 @@ const Home = () => {
 
 
             </MDBContainer>
+
+            {/*<p>총 페이지수: {totalPages}</p><p>현재 페이지: {page}</p>*/}
+                <Pagination
+                    totalPages={totalPages}
+                    handleSearchUser={handleSearchUser}
+                    setCurrentPageNumber={setCurrentPageNumber}
+                />
 
         </div>
     )

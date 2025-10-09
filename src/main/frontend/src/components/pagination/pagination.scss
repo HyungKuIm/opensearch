@@ -1,0 +1,44 @@
+.page {
+  text-align: center;
+  width: 100%;
+}
+.pagination {
+  display: inline-block;
+  padding: 0;
+  margin-top: 20px;
+
+  li {
+    display: inline;
+    text-align: center;
+
+    a {
+      float: left;
+      display: block;
+      font-size: 14px;
+      padding: 5px 12px;
+      color: #96a0ad;
+      line-height: 1.5;
+    }
+
+
+  }
+
+  .page-item {
+
+    cursor: pointer;
+  }
+
+  .active {
+    margin-left: 3px;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 100%;
+    background-color: #2e9cdf;
+    color: #ffffff;
+  }
+
+
+
+}

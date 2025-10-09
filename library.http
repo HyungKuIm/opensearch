@@ -1,1 +1,1 @@
-GET http://localhost:8080/books/list?title=스프링
+GET http://localhost:8080/books/list?title=자바&page=3

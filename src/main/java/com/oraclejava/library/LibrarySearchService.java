@@ -16,7 +16,7 @@ import java.util.List;
 public class LibrarySearchService {
     private final OpenSearchClient openSearchClient;
 
-    public List<ITBook> search(String keyword) {
+    public List<ITBook> search(String keyword, int from, int size) {
         List<ITBook> books = new ArrayList<>();
         //ITBook book = new ITBook();
         try {
@@ -28,7 +28,9 @@ public class LibrarySearchService {
                                     query.term(match ->
                                             match.field("title")
                                                 .value(q -> q.stringValue(keyword))
-                                                .caseInsensitive(true))));
+                                                .caseInsensitive(true)))
+                            .from(from)
+                            .size(size));
 
             SearchResponse<ITBook> searchResponse =
                     openSearchClient.search(request, ITBook.class);

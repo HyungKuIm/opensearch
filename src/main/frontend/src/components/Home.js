@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { NumericFormat } from 'react-number-format';
 import {
     MDBCard,
@@ -25,21 +25,26 @@ const Home = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
+    const hasQuery = useMemo(() => title.trim().length > 0, [title]);
 
+    // 검색 함수: 항상 매개변수로 동작시켜 stale closure 방지
 
-    const searchTitle = async () => {
+    const requestLibrarySearch = async (page, title) => {
         const trimmed = title.trim();
         if (!trimmed) {
             setError('제목을 입력하여 주십시오');
+            setBooks([]);
+            setTotalPages(0);
             return;
         }
+
+        //한글/공백 안전 인코딩
+        const q = encodeURIComponent(trimmed);
 
         try {
             setLoading(true);
             setError(null);
 
-            //한글/공백 안전 인코딩
-            const q = encodeURIComponent(trimmed);
 
             const url = `http://localhost:8080/books/list?title=${q}&page=${page}`;
 
@@ -53,7 +58,8 @@ const Home = () => {
             }
 
             const data = await response.json();
-            setBooks(Array.isArray(data) ? data : []);
+            setBooks(Array.isArray(data.contents) ? data.contents : []);
+            setTotalPages(data.totalPages);
 
 
         } catch (e) {
@@ -64,8 +70,26 @@ const Home = () => {
         }
     };
 
+    // 페이지 바뀔 때만 현재 제목으로 재검색
+    useEffect(() => {
+        if (hasQuery) {
+            requestLibrarySearch(page, title);
+        }
+    }, [page]);
+
+    
+
     const onKeyDown = (e) => {
-        if (e.key === 'Enter') searchTitle();
+        if (e.key === 'Enter') {
+            // 새 검색은 1페이지부터
+            setPage(1);
+            requestLibrarySearch(1, title);
+        }
+    };
+
+    const onClickSearch = () => {
+        setPage(1);
+        requestLibrarySearch(1, title);
     };
 
     const handleSearchUser = () => {
@@ -73,6 +97,11 @@ const Home = () => {
     }
 
     const setCurrentPageNumber = (page) => {
+        // 페이지 이동 시 제목이 비어 있으면 무시
+        if (!title.trim()) {
+        setError('제목을 입력하여 주십시오');
+        return;
+        }
         setPage(page);
     }
 
@@ -90,7 +119,7 @@ const Home = () => {
                         onChange={(e) => setTitle(e.target.value)}
                         onKeyDown={onKeyDown}
                     />
-                    <MDBBtn onClick={searchTitle} disabled={loading}>
+                    <MDBBtn onClick={onClickSearch} disabled={loading}>
                         {loading ? '검색중...' : <i className="fas fa-search"></i>}
                     </MDBBtn>
                 </div>
@@ -127,6 +156,7 @@ const Home = () => {
             {/*<p>총 페이지수: {totalPages}</p><p>현재 페이지: {page}</p>*/}
                 <Pagination
                     totalPages={totalPages}
+                    currentPage={page}
                     handleSearchUser={handleSearchUser}
                     setCurrentPageNumber={setCurrentPageNumber}
                 />

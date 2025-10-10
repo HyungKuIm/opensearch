@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import lombok.val;
 
 import java.util.List;
 
@@ -27,13 +28,14 @@ public class BookController {
     private final LibrarySearchService librarySearchService;
 
     @GetMapping("/list")
-    public List<ITBook> listOfBook(@RequestParam String title,
+    public PageableResource listOfBook(@RequestParam String title,
             @RequestParam(required = false, defaultValue = "1") int page) {
         log.info("title: " + title);
-        int pageSize = 9;
-        int from = (page - 1) * pageSize;
 
-        return librarySearchService.search(title, from, pageSize);
+
+        val books = librarySearchService.search(title, page);
+
+        return books;
     }
     
 }

@@ -16,9 +16,11 @@ import java.util.List;
 public class LibrarySearchService {
     private final OpenSearchClient openSearchClient;
 
-    public List<ITBook> search(String keyword, int from, int size) {
+    public PageableResource search(String keyword, int page) {
         List<ITBook> books = new ArrayList<>();
         //ITBook book = new ITBook();
+        int pageSize = 9;
+        int from = (page - 1) * pageSize;
         try {
             // 대소문자 구분 하지 않기위해서 match에서 term으로 변경
             //google.com/search?q=opensearch+ignore+case&rlz=1C1PNKB_enKR1165KR1165&gs_lcrp=EgZjaHJvbWUqCQgCEAAYExiABDIGCAAQRRg5MgkIARAAGBMYgAQyCQgCEAAYExiABDIJCAMQABgTGIAEMgkIBBAAGBMYgAQyCAgFEAAYExgeMggIBhAAGBMYHjIICAcQABgTGB4yCAgIEAAYExgeMggICRAAGBMYHtIBCDc3MjBqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8&udm=50&fbs=AIIjpHxAboEh8T4AmOafDyCTZyImbu7ua2q4ZFqx4qKGzpR0xtJRrGTW7f0pXdPdIGyseoZVBqoYBwXt44Lz2w1BZVtUi404Tked3a57zoQmFfLxI0IRIrneSuvLcHHDAqHG97za1v8yXYS2NijiEh1xRJJ628--AbHWJDJMl7HL8du0O8Qn8P0DbKCD4Ofn6QXFHUBTYwkrWcVsm8hkAHa2QF2dIe5hIm0sZTfD58oqTkC9uUyacd0&ved=2ahUKEwjiiMej9JGQAxVloa8BHQavD6cQ0NsOegQIPBAA&aep=10&ntc=1
@@ -30,19 +32,22 @@ public class LibrarySearchService {
                                                 .value(q -> q.stringValue(keyword))
                                                 .caseInsensitive(true)))
                             .from(from)
-                            .size(size));
+                            .size(pageSize));
 
             SearchResponse<ITBook> searchResponse =
                     openSearchClient.search(request, ITBook.class);
 
             List<Hit<ITBook>> hits = searchResponse.hits().hits();
             System.out.println("Hit count: " + hits.size());
+            long total = searchResponse.hits().total().value();
+            int totalPage = (int)Math.ceil((double)total / 9);
             for (Hit<ITBook> hit : hits) {
                 books.add(hit.source());
             }
+            return new PageableResourceImpl(books, page, totalPage);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return books;
+        
     }
 }

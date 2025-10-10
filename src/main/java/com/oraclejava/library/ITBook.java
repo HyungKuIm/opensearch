@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ITBook {
+public class ITBook implements IEntity {
     private int id;
     private String title;
     private int price;
